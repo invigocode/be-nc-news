@@ -73,7 +73,6 @@ describe("GET /api/articles/:article_id", () => {
       .get("/api/articles/1")
       .expect(200)
       .then(({ body }) => {
-        console.log(body);
         expect(body.article).toMatchObject({
           article_id: 1,
           author: "butter_bridge",
@@ -85,6 +84,22 @@ describe("GET /api/articles/:article_id", () => {
           article_img_url:
             "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
         });
+      });
+  });
+  test("GET: 404, responds with 404 if passed invalid id", () => {
+    return supertest(app)
+      .get("/api/articles/999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Article not found" });
+      });
+  });
+  test("GET: 400, responds with 400 if passed id that is NaN", () => {
+    return supertest(app)
+      .get("/api/articles/banana")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Bad Request" });
       });
   });
 });
