@@ -8,7 +8,6 @@ const {
 const { getArticleById } = require("./controllers/articles.controller");
 
 const app = express();
-app.use(express.json());
 
 app.get("/api", (request, response, next) => {
   response.status(200).send({ msg: "server is up and running" }).catch(next);
