@@ -86,4 +86,20 @@ describe("GET /api/articles/:article_id", () => {
         });
       });
   });
+  test("GET: 404, responds with 404 if passed invalid id", () => {
+    return supertest(app)
+      .get("/api/articles/999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Article not found" });
+      });
+  });
+  test("GET: 400, responds with 400 if passed id that is NaN", () => {
+    return supertest(app)
+      .get("/api/articles/banana")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Bad Request" });
+      });
+  });
 });
