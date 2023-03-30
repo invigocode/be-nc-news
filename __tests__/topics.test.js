@@ -151,3 +151,59 @@ describe("/api/articles", () => {
       });
   });
 });
+
+describe("/api/articles/:article_id/comments", () => {
+  test("GET: 200, responds with an object containing a key of comments and a value of an array of comments", () => {
+    return supertest(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        // console.log(body);
+        expect(Object.keys(body)[0]).toBe("comments");
+      });
+  });
+  test("should respond with an array of comments for the given article_id", () => {
+    return supertest(app)
+      .get("/api/articles/9/comments")
+      .expect(200)
+      .then(({ body }) => {
+        // console.log(body);
+        expect(body.comments).toHaveLength(2);
+        body.comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+          });
+        });
+      });
+  });
+  test("GET: 200, should respond with comments in descending order ", () => {
+    return supertest(app)
+      .get("/api/articles/9/comments")
+      .expect(200)
+      .then(({ body }) => {
+        // console.log(body.comments);
+        expect(body.comments).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  test("GET 404: responds with 404 if request has a typo", () => {
+    return supertest(app)
+      .get("/api/articles/12345/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Article not found" });
+      });
+  });
+  test("GET 400: responds with 400 if request is NaN", () => {
+    return supertest(app)
+      .get("/api/articles/NaN/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Bad Request" });
+      });
+  });
+});
