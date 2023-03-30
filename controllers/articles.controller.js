@@ -23,7 +23,6 @@ exports.getArticleById = (request, response, next) => {
 };
 
 exports.getComments = (request, response, next) => {
-  // console.log(request.params);
   const { article_id } = request.params;
   Promise.all([fetchComments(article_id), fetchArticleById(article_id)])
     .then(([comments, article]) => {

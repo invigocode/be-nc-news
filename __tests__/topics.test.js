@@ -14,7 +14,6 @@ describe("/api", () => {
       .get("/api")
       .expect(200)
       .then(({ body }) => {
-        // console.log(body);
         expect(body).toMatchObject({ msg: expect.any(String) });
         expect(body.msg).toBe("server is up and running");
       });
@@ -27,7 +26,6 @@ describe("/api/topics", () => {
       .get("/api/topics")
       .expect(200)
       .then(({ body }) => {
-        // console.log(body);
         expect(Object.keys(body)[0]).toBe("topics");
       });
   });
@@ -64,7 +62,6 @@ describe("/api/articles/:article_id", () => {
       .get("/api/articles/1")
       .expect(200)
       .then(({ body }) => {
-        // console.log(body);
         expect(Object.keys(body)[0]).toBe("article");
         expect(body.article).toBeInstanceOf(Object);
       });
@@ -158,8 +155,15 @@ describe("/api/articles/:article_id/comments", () => {
       .get("/api/articles/1/comments")
       .expect(200)
       .then(({ body }) => {
-        // console.log(body);
         expect(Object.keys(body)[0]).toBe("comments");
+      });
+  });
+  test("GET: 200, responds with an empty array when passed valid article with no comments", () => {
+    return supertest(app)
+      .get("/api/articles/4/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toEqual([]);
       });
   });
   test("should respond with an array of comments for the given article_id", () => {
@@ -167,7 +171,6 @@ describe("/api/articles/:article_id/comments", () => {
       .get("/api/articles/9/comments")
       .expect(200)
       .then(({ body }) => {
-        // console.log(body);
         expect(body.comments).toHaveLength(2);
         body.comments.forEach((comment) => {
           expect(comment).toMatchObject({
@@ -176,7 +179,7 @@ describe("/api/articles/:article_id/comments", () => {
             created_at: expect.any(String),
             author: expect.any(String),
             body: expect.any(String),
-            article_id: expect.any(Number),
+            article_id: 9,
           });
         });
       });
