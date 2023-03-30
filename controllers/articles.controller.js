@@ -1,5 +1,12 @@
-const { response } = require("../app");
-const { fetchArticleById } = require("../models/articles.model");
+const { fetchArticleById, fetchArticles } = require("../models/articles.model");
+
+exports.getArticles = (request, response, next) => {
+  fetchArticles()
+    .then((articles) => {
+      response.status(200).send({ articles });
+    })
+    .catch((err) => next(err));
+};
 
 exports.getArticleById = (request, response, next) => {
   const { article_id } = request.params;
@@ -7,7 +14,5 @@ exports.getArticleById = (request, response, next) => {
     .then((article) => {
       response.status(200).send({ article });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch((err) => next(err));
 };

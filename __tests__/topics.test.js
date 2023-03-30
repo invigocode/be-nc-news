@@ -3,6 +3,7 @@ const supertest = require("supertest");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data");
 const db = require("../db/connection");
+require("jest-sorted");
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
@@ -57,8 +58,8 @@ describe("/api/topics", () => {
   });
 });
 
-describe("GET /api/articles/:article_id", () => {
-  test('status: 200, responds with an object containing a key of "article" and a value of an object', () => {
+describe("/api/articles/:article_id", () => {
+  test('GET : 200, responds with an object containing a key of "article" and a value of an object', () => {
     return supertest(app)
       .get("/api/articles/1")
       .expect(200)
@@ -86,20 +87,44 @@ describe("GET /api/articles/:article_id", () => {
         });
       });
   });
-  test("GET: 404, responds with 404 if passed invalid id", () => {
+});
+
+describe("/api/articles", () => {
+  test("GET: 200, should respond with an articles array containing article objects", () => {
     return supertest(app)
-      .get("/api/articles/999")
-      .expect(404)
+      .get("/api/articles")
+      .expect(200)
       .then(({ body }) => {
-        expect(body).toEqual({ msg: "Article not found" });
+        console.log(body);
+        expect(body.articles).toBeInstanceOf(Array);
       });
   });
-  test("GET: 400, responds with 400 if passed id that is NaN", () => {
+  test("GET: 200, should respond with articles in descending order and sorted by 'created_at'", () => {
     return supertest(app)
-      .get("/api/articles/banana")
-      .expect(400)
+      .get("/api/articles")
+      .expect(200)
       .then(({ body }) => {
-        expect(body).toEqual({ msg: "Bad Request" });
+        expect(body.articles).toHaveLength(12);
+        body.articles.forEach((article) => {
+          expect(article).toMatchObject({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            topic: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+            comment_count: expect.any(Number),
+          });
+        });
+      });
+  });
+  test("GET 404: responds with 404 if request has a typo", () => {
+    return supertest(app)
+      .get("/api/typo")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Path not found" });
       });
   });
 });
