@@ -95,11 +95,10 @@ describe("/api/articles", () => {
       .get("/api/articles")
       .expect(200)
       .then(({ body }) => {
-        console.log(body);
         expect(body.articles).toBeInstanceOf(Array);
       });
   });
-  test("GET: 200, should respond with articles in descending order and sorted by 'created_at'", () => {
+  test("GET: 200, should respond with articles array of article objects with correct properties'", () => {
     return supertest(app)
       .get("/api/articles")
       .expect(200)
@@ -117,6 +116,14 @@ describe("/api/articles", () => {
             comment_count: expect.any(Number),
           });
         });
+      });
+  });
+  test("GET: 200, should respond with articles in descending order and sorted by created_at", () => {
+    return supertest(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at", { descending: true });
       });
   });
   test("GET 404: responds with 404 if request has a typo", () => {
