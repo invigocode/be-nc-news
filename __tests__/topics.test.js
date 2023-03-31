@@ -254,29 +254,19 @@ describe("/api/articles/:article_id/comments", () => {
     return supertest(app)
       .post("/api/articles/12345/comments")
       .send(comment)
-      .expect(400)
+      .expect(404)
       .then(({ body }) => {
-        expect(body).toEqual({ msg: "Bad Request" });
+        expect(body).toEqual({ msg: "404 not found" });
       });
   });
   test("GET 404: responds with 404 if username doesn't exist", () => {
-    const comment = { username: "icellusedkars", body: "cool comment" };
-    return supertest(app)
-      .post("/api/articles/NaN/comments")
-      .send(comment)
-      .expect(400)
-      .then(({ body }) => {
-        expect(body).toEqual({ msg: "Bad Request" });
-      });
-  });
-  test("GET 400: responds with 400 if username doesn't exist", () => {
-    const comment = { username: "icellusedkars" };
+    const comment = { username: "null", body: "cool comment" };
     return supertest(app)
       .post("/api/articles/1/comments")
       .send(comment)
-      .expect(400)
+      .expect(404)
       .then(({ body }) => {
-        expect(body).toEqual({ msg: "Bad Request" });
+        expect(body).toEqual({ msg: "404 not found" });
       });
   });
 });

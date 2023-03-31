@@ -3,8 +3,8 @@ const { getTopics } = require("./controllers/topics.controller");
 const {
   invalidRequest,
   customError,
-  BadRequest,
   serverError,
+  badRequest,
 } = require("./controllers/errorHandle.controller");
 const {
   getArticleById,
@@ -29,7 +29,7 @@ app.post("/api/articles/:article_id/comments", addComment);
 
 app.all("/*", invalidRequest);
 app.use(customError);
-app.use(BadRequest);
+app.use(badRequest);
 app.use(serverError);
 
 module.exports = app;
