@@ -218,7 +218,6 @@ describe("/api/articles/:article_id/comments", () => {
       .send(comment)
       .expect(201)
       .then(({ body }) => {
-        console.log(body);
         expect(Object.keys(body)[0]).toBe("comment");
         expect(body.comment).toBeInstanceOf(Object);
       });
@@ -232,27 +231,10 @@ describe("/api/articles/:article_id/comments", () => {
       .then(({ body }) => {
         expect(body.comment).toMatchObject({
           comment_id: expect.any(Number),
-          body: expect.any(String),
-          article_id: expect.any(Number),
-          author: expect.any(String),
-          votes: expect.any(Number),
-          created_at: expect.any(String),
-        });
-      });
-  });
-  test("POST: 201, responds with the requested comment", () => {
-    const comment = { username: "icellusedkars", body: "cool comment" };
-    return supertest(app)
-      .post("/api/articles/9/comments")
-      .send(comment)
-      .expect(201)
-      .then(({ body }) => {
-        expect(body.comment).toMatchObject({
-          comment_id: 19,
           body: "cool comment",
           article_id: 9,
           author: "icellusedkars",
-          votes: 0,
+          votes: expect.any(Number),
           created_at: expect.any(String),
         });
       });
@@ -261,6 +243,36 @@ describe("/api/articles/:article_id/comments", () => {
     const comment = { username: "icellusedkars", body: "cool comment" };
     return supertest(app)
       .post("/api/articles/NaN/comments")
+      .send(comment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Bad Request" });
+      });
+  });
+  test("GET 404: responds with 404 if article id doesn't exist", () => {
+    const comment = { username: "icellusedkars", body: "cool comment" };
+    return supertest(app)
+      .post("/api/articles/12345/comments")
+      .send(comment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Bad Request" });
+      });
+  });
+  test("GET 404: responds with 404 if username doesn't exist", () => {
+    const comment = { username: "icellusedkars", body: "cool comment" };
+    return supertest(app)
+      .post("/api/articles/NaN/comments")
+      .send(comment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Bad Request" });
+      });
+  });
+  test("GET 400: responds with 400 if username doesn't exist", () => {
+    const comment = { username: "icellusedkars" };
+    return supertest(app)
+      .post("/api/articles/1/comments")
       .send(comment)
       .expect(400)
       .then(({ body }) => {

@@ -10,7 +10,7 @@ exports.customError = (err, request, response, next) => {
 };
 
 exports.BadRequest = (err, request, response, next) => {
-  if (err.code === "22P02") {
+  if (err.code === "22P02" || "23502") {
     response.status(400).send({ msg: "Bad Request" });
   } else {
     next(err);

@@ -38,19 +38,6 @@ exports.getComments = (request, response, next) => {
 exports.addComment = (request, response, next) => {
   const { article_id } = request.params;
   const { username, body } = request.body;
-  console.log(request.params);
-  console.log(request.body);
-  postComment(article_id, username, body)
-    .then(({ comment }) => {
-      response.status(201).send(comment);
-    })
-    .catch((err) => next(err));
-};
-
-exports.addComment = (request, response, next) => {
-  const { article_id } = request.params;
-  const { username, body } = request.body;
-  console.log(request.body);
   postComment(article_id, username, body)
     .then((comment) => {
       response.status(201).send({ comment });
