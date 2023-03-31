@@ -3,6 +3,7 @@ exports.invalidRequest = (request, response, next) => {
 };
 
 exports.customError = (err, request, response, next) => {
+  console.log(err);
   if (err.status && err.msg) {
     response.status(err.status).send({ msg: err.msg });
   } else next(err);

@@ -3,6 +3,7 @@ const {
   fetchArticleById,
   fetchArticles,
   fetchComments,
+  postComment,
 } = require("../models/articles.model");
 
 exports.getArticles = (request, response, next) => {
@@ -30,6 +31,29 @@ exports.getComments = (request, response, next) => {
         return response.status(200).send({ comments });
       }
       Promise.reject({ status: 404, msg: "Article not found" });
+    })
+    .catch((err) => next(err));
+};
+
+exports.addComment = (request, response, next) => {
+  const { article_id } = request.params;
+  const { username, body } = request.body;
+  console.log(request.params);
+  console.log(request.body);
+  postComment(article_id, username, body)
+    .then(({ comment }) => {
+      response.status(201).send(comment);
+    })
+    .catch((err) => next(err));
+};
+
+exports.addComment = (request, response, next) => {
+  const { article_id } = request.params;
+  const { username, body } = request.body;
+  console.log(request.body);
+  postComment(article_id, username, body)
+    .then((comment) => {
+      response.status(201).send({ comment });
     })
     .catch((err) => next(err));
 };
