@@ -17,6 +17,5 @@ exports.badRequest = (err, request, response, next) => {
 };
 
 exports.serverError = (err, request, response, next) => {
-  console.log(err);
   response.status(500).send({ msg: "Server Error" });
 };

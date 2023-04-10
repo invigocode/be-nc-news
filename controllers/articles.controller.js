@@ -1,10 +1,12 @@
 const { response } = require("../app");
+const comments = require("../db/data/test-data/comments");
 const {
   fetchArticleById,
   fetchArticles,
   fetchComments,
   postComment,
   articlePatcher,
+  removeComment,
 } = require("../models/articles.model");
 
 exports.getArticles = (request, response, next) => {
@@ -52,6 +54,15 @@ exports.patchArticle = (request, response, next) => {
   articlePatcher(article_id, inc_votes)
     .then((article) => {
       response.status(200).send({ article });
+    })
+    .catch((err) => next(err));
+};
+
+exports.deleteComment = (request, response, next) => {
+  const { comment_id } = request.params;
+  removeComment(comment_id)
+    .then(() => {
+      response.status(204).send();
     })
     .catch((err) => next(err));
 };

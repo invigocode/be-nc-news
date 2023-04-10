@@ -12,6 +12,7 @@ const {
   getComments,
   addComment,
   patchArticle,
+  deleteComment,
 } = require("./controllers/articles.controller");
 
 const app = express();
@@ -29,6 +30,8 @@ app.get("/api/articles/:article_id/comments", getComments);
 app.post("/api/articles/:article_id/comments", addComment);
 
 app.patch("/api/articles/:article_id", patchArticle);
+
+app.delete("/api/comments/:comment_id", deleteComment);
 
 app.all("/*", invalidRequest);
 app.use(customError);

@@ -272,7 +272,7 @@ describe("/api/articles/:article_id/comments", () => {
 });
 
 describe("/api/articles/:article_id", () => {
-  test("PATCH: 200, should responds with an object containing a article key and value of an object", () => {
+  test("PATCH: 200, responds with an object containing a article key and value of an object", () => {
     return supertest(app)
       .patch("/api/articles/1")
       .send({ inc_votes: 1 })
@@ -317,6 +317,34 @@ describe("/api/articles/:article_id", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body).toEqual({ msg: "Path not found" });
+      });
+  });
+});
+
+describe("/api/comments/:comment_id", () => {
+  test("DELETE: 204, responds with an object containing a comment key and value of an empty object", () => {
+    return supertest(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(({ body }) => {
+        expect(body).toEqual({});
+      });
+  });
+  test("responds with 400 err when passed invalid comment_id", () => {
+    return supertest(app)
+      .delete("/api/comments/999")
+      .send({})
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Bad Request" });
+      });
+  });
+  test("responds with 400 err when passed a comment_id that is NaN", () => {
+    return supertest(app)
+      .delete("/api/comments/NaN")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Bad Request" });
       });
   });
 });
