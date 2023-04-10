@@ -209,3 +209,64 @@ describe("/api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("/api/articles/:article_id/comments", () => {
+  test("POST: 201, responds with an object containing a comment key and value of an object", () => {
+    const comment = { username: "icellusedkars", body: "cool comment" };
+    return supertest(app)
+      .post("/api/articles/9/comments")
+      .send(comment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(Object.keys(body)[0]).toBe("comment");
+        expect(body.comment).toBeInstanceOf(Object);
+      });
+  });
+  test("POST: 201, responds with an object of comment with the correct keys", () => {
+    const comment = { username: "icellusedkars", body: "cool comment" };
+    return supertest(app)
+      .post("/api/articles/9/comments")
+      .send(comment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toMatchObject({
+          comment_id: expect.any(Number),
+          body: "cool comment",
+          article_id: 9,
+          author: "icellusedkars",
+          votes: expect.any(Number),
+          created_at: expect.any(String),
+        });
+      });
+  });
+  test("GET 400: responds with 400 if request is NaN", () => {
+    const comment = { username: "icellusedkars", body: "cool comment" };
+    return supertest(app)
+      .post("/api/articles/NaN/comments")
+      .send(comment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Bad Request" });
+      });
+  });
+  test("GET 404: responds with 404 if article id doesn't exist", () => {
+    const comment = { username: "icellusedkars", body: "cool comment" };
+    return supertest(app)
+      .post("/api/articles/12345/comments")
+      .send(comment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "404 not found" });
+      });
+  });
+  test("GET 404: responds with 404 if username doesn't exist", () => {
+    const comment = { username: "null", body: "cool comment" };
+    return supertest(app)
+      .post("/api/articles/1/comments")
+      .send(comment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "404 not found" });
+      });
+  });
+});

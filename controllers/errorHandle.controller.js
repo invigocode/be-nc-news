@@ -8,12 +8,12 @@ exports.customError = (err, request, response, next) => {
   } else next(err);
 };
 
-exports.BadRequest = (err, request, response, next) => {
+exports.badRequest = (err, request, response, next) => {
   if (err.code === "22P02") {
     response.status(400).send({ msg: "Bad Request" });
-  } else {
-    next(err);
-  }
+  } else if (err.code === "23503") {
+    response.status(404).send({ msg: "404 not found" });
+  } else next(err);
 };
 
 exports.serverError = (err, request, response, next) => {
