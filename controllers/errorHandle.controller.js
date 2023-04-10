@@ -13,7 +13,7 @@ exports.badRequest = (err, request, response, next) => {
     response.status(400).send({ msg: "Bad Request" });
   } else if (err.code === "23503") {
     response.status(404).send({ msg: "404 not found" });
-  }
+  } else next(err);
 };
 
 exports.serverError = (err, request, response, next) => {
