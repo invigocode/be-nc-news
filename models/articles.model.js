@@ -20,7 +20,7 @@ exports.fetchArticleById = (article_id) => {
   return db
     .query(
       `
-SELECT *
+SELECT * 
 FROM articles
 WHERE articles.article_id = $1
 `,
@@ -61,5 +61,25 @@ exports.postComment = (article_id, username, body) => {
     )
     .then((result) => {
       return result.rows[0];
+    });
+};
+
+exports.articlePatcher = (article_id, inc_votes) => {
+  return db
+    .query(
+      `
+    UPDATE articles
+    SET votes = votes + $2
+    WHERE article_id = $1
+    RETURNING *;
+    `,
+      [article_id, inc_votes]
+    )
+    .then((result) => {
+      if (result.rowCount === 0) {
+        return Promise.reject({ status: 404, msg: "Path not found" });
+      } else {
+        return result.rows[0];
+      }
     });
 };

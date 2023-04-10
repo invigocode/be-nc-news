@@ -270,3 +270,53 @@ describe("/api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("/api/articles/:article_id", () => {
+  test("PATCH: 200, should responds with an object containing a article key and value of an object", () => {
+    return supertest(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: 1 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(Object.keys(body)[0]).toBe("article");
+        expect(body.article).toBeInstanceOf(Object);
+      });
+  });
+  test("PATCH: 200, should respond with an article with added votes when passed 1+ votes", () => {
+    return supertest(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: 1 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toEqual({
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 101,
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        });
+      });
+  });
+  test("PATCH: 400, should respond with 400 err when passed vote that is NaN", () => {
+    return supertest(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: "NaN" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Bad Request" });
+      });
+  });
+  test("PATCH: 404, should respond with 404 err when passed article id that doesn't exist", () => {
+    return supertest(app)
+      .patch("/api/articles/999")
+      .send({ inc_votes: 1 })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Path not found" });
+      });
+  });
+});

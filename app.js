@@ -11,6 +11,7 @@ const {
   getArticles,
   getComments,
   addComment,
+  patchArticle,
 } = require("./controllers/articles.controller");
 
 const app = express();
@@ -26,6 +27,8 @@ app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles/:article_id/comments", getComments);
 
 app.post("/api/articles/:article_id/comments", addComment);
+
+app.patch("/api/articles/:article_id", patchArticle);
 
 app.all("/*", invalidRequest);
 app.use(customError);
