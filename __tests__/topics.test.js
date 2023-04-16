@@ -348,3 +348,46 @@ describe("/api/comments/:comment_id", () => {
       });
   });
 });
+
+describe("/api/users", () => {
+  test("GET 200: responds with an object containing key of users and value of object", () => {
+    return supertest(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        expect(Object.keys(body)[0]).toBe("users");
+      });
+  });
+  test("GET 200: responds with an array of user objects", () => {
+    const user = {
+      username: "butter_bridge",
+      name: "jonny",
+      avatar_url:
+        "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+    };
+    const user3 = {
+      username: "lurker",
+      name: "do_nothing",
+      avatar_url:
+        "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+    };
+    return supertest(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        console.log(body);
+        expect(body.users.length).toBe(4);
+        expect(body.users).toBeInstanceOf(Array);
+        expect(body.users[0]).toEqual(user);
+        expect(body.users[3]).toEqual(user3);
+      });
+  });
+  test("GET 404: responds with 404 if request has a typo", () => {
+    return supertest(app)
+      .get("/api/typo")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Path not found" });
+      });
+  });
+});

@@ -13,6 +13,7 @@ const {
   addComment,
   patchArticle,
   deleteComment,
+  getUsers,
 } = require("./controllers/articles.controller");
 
 const app = express();
@@ -32,6 +33,8 @@ app.post("/api/articles/:article_id/comments", addComment);
 app.patch("/api/articles/:article_id", patchArticle);
 
 app.delete("/api/comments/:comment_id", deleteComment);
+
+app.get("/api/users", getUsers);
 
 app.all("/*", invalidRequest);
 app.use(customError);

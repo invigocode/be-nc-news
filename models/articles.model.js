@@ -103,3 +103,16 @@ exports.removeComment = (comment_id) => {
       return result.rows[0];
     });
 };
+
+exports.fetchUsers = () => {
+  return db
+    .query(
+      `
+      SELECT users.username, users.name, users.avatar_url
+      FROM users
+    `
+    )
+    .then((result) => {
+      return result.rows;
+    });
+};
