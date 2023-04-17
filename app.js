@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const { getTopics } = require("./controllers/topics.controller");
 const {
   invalidRequest,
@@ -18,6 +19,8 @@ const {
 
 const app = express();
 app.use(express.json());
+
+app.use(cors());
 
 app.get("/api", (request, response, next) => {
   response.status(200).send({ msg: "server is up and running" }).catch(next);

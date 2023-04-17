@@ -1,6 +1,6 @@
 Aadil's News API
 
-This is an news app that works in a way similar to Reddit. The app allows several articles where you can leave comments. You can access the app using the link below:
+This is an news app that has articles where you can leave comments. You can access the app using the link below:
 
 https://news-4j2x.onrender.com/api
 
